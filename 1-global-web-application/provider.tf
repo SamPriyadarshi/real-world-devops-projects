@@ -9,4 +9,9 @@ terraform {
       version = "5.10.0"
     }
   }
+
+    backend "gcs" {
+    bucket = "real-world-devops-state"
+    prefix = "terraform/state"
+  }
 }
