@@ -68,7 +68,7 @@ The following variables can be customized in the `terraform.tfvars` file:
 | `auto_healing_initial_delay_sec` | The initial delay for auto-healing.                                                 | `60`            |
 | `dns_zone_name`                 | The name of your DNS zone (e.g., `google-cloud-pocs.dev`).                          |                 |
 | `dns_managed_zone_name`         | The name of the managed DNS zone in Cloud DNS.                                      |                 |
-| `dns_subdomain`                 | The subdomain for the application (e.g., `interstellar`).                         | `interstellar` |
+| `dns_subdomain`                 | The subdomain for the application (e.g., `galactic-empire`).                         | `galactic-empire` |
 
 ## Outputs
 
@@ -88,8 +88,8 @@ The following outputs are available after deployment:
 1.  **Clone the repository:**
 
     ```bash
-    git clone <repository_url>
-    cd <repository_directory>
+    git clone https://github.com/SamPriyadarshi/real-world-devops-projects.git
+    cd 1-global-web-application
     ```
 
 2.  **Initialize Terraform:**
@@ -109,16 +109,30 @@ The following outputs are available after deployment:
     dns_managed_zone_name = "your-dns-managed-zone-name"
     ```
 
-4.  **Deploy the infrastructure:**
+4.  **Configure the Backend:**
+    *   Update the `backend "gcs"` block in your `main.tf` file with the correct bucket name:
+
+    ```terraform
+    terraform {
+      # ... other configuration ...
+      backend "gcs" {
+        bucket = "real-world-devops-state" # Replace with your bucket name
+        prefix = "terraform/state"        # Optional prefix
+      }
+    }
+    ```
+    *   Run `terraform init` again to initialize the backend.
+
+5.  **Deploy the infrastructure:**
 
     ```bash
     terraform plan
     terraform apply
     ```
 
-5.  **Access the application:**
+6.  **Access the application:**
 
-    Once the deployment is complete, you can access the application using the `forwarding_rule_ip_address` output or by using the DNS name you configured (e.g., `interstellar.google-cloud-pocs.dev`).
+    Once the deployment is complete, you can access the application using the `forwarding_rule_ip_address` output or by using the DNS name you configured (e.g., `galactic-empire.google-cloud-pocs.dev`).
 
 ## Interstellar Theme
 
@@ -129,6 +143,11 @@ The web application displays a one-liner inspired by the movie *Interstellar*, a
 *   The default firewall rules allow all egress traffic. In a production environment, it's highly recommended to restrict egress traffic to only necessary destinations.
 *   The instance startup script installs Apache and configures it to serve the website from the GCS bucket.
 *   The SSL certificate provisioning process might take some time.
+*   Terraform state is stored remotely in a dedicated Google Cloud Storage bucket (`real-world-devops-state`) to enable collaboration and provide a more robust state management solution.
+
+## License
+
+This project is licensed under the **MIT License**. See the [LICENSE](LICENSE) file for details.
 
 ## Cleanup
 
