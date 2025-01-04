@@ -1,16 +1,3 @@
-terraform {
-  required_providers {
-    google = {
-      source  = "hashicorp/google"
-      version = ">= 4.0.0"
-    }
-    google-beta = {
-      source  = "hashicorp/google-beta"
-      version = "5.10.0"
-    }
-  }
-}
-
 resource "google_compute_global_address" "default" {
   name    = "external-ip"
   project = var.project_id
@@ -35,7 +22,7 @@ resource "google_compute_router_nat" "default" {
   region                             = var.region
   router                             = google_compute_router.default.name
   source_subnetwork_ip_ranges_to_nat = "ALL_SUBNETWORKS_ALL_IP_RANGES"
-  nat_ip_allocate_option              = "AUTO_ONLY"
+  nat_ip_allocate_option             = "AUTO_ONLY"
 }
 
 resource "google_compute_router" "default_eu" {
@@ -51,7 +38,7 @@ resource "google_compute_router_nat" "default_eu" {
   region                             = var.secondary_region
   router                             = google_compute_router.default_eu.name
   source_subnetwork_ip_ranges_to_nat = "ALL_SUBNETWORKS_ALL_IP_RANGES"
-  nat_ip_allocate_option              = "AUTO_ONLY"
+  nat_ip_allocate_option             = "AUTO_ONLY"
 }
 
 module "firewall" {
@@ -92,39 +79,39 @@ module "mig" {
 }
 
 module "mig_eu" {
-  source                          = "./modules/mig"
-  project_id                      = var.project_id
-  mig_name                        = "${var.app_name}-mig-eu"
-  base_instance_name              = "${var.app_name}-eu"
-  region                          = var.secondary_region
-  instance_template_self_link     = module.instance_template.instance_template_id
-  health_check_self_link          = module.load_balancer.health_check_id
-  autoscaler_name                 = "${var.app_name}-autoscaler-eu"
-  min_replicas                    = var.min_replicas
-  max_replicas                    = var.max_replicas
-  cpu_target_utilization          = var.cpu_target_utilization
+  source                         = "./modules/mig"
+  project_id                     = var.project_id
+  mig_name                       = "${var.app_name}-mig-eu"
+  base_instance_name             = "${var.app_name}-eu"
+  region                         = var.secondary_region
+  instance_template_self_link    = module.instance_template.instance_template_id
+  health_check_self_link         = module.load_balancer.health_check_id
+  autoscaler_name                = "${var.app_name}-autoscaler-eu"
+  min_replicas                   = var.min_replicas
+  max_replicas                   = var.max_replicas
+  cpu_target_utilization         = var.cpu_target_utilization
   auto_healing_initial_delay_sec = var.auto_healing_initial_delay_sec
 }
 
 module "load_balancer" {
-  source                              = "./modules/load_balancer"
-  project_id                          = var.project_id
-  http_health_check_name              = "${var.app_name}-http-healthcheck"
-  backend_service_name                = "${var.app_name}-backend-service"
-  region                              = var.region
-  mig_self_link                       = module.mig.instance_group_id
-  mig_eu_self_link                    = module.mig_eu.instance_group_id
-  url_map_name                        = "${var.app_name}-url-map"
-  https_proxy_name                     = "${var.app_name}-https-proxy"
-  forwarding_rule_name                = "${var.app_name}-forwarding-rule"
-  global_address_ip                   = google_compute_global_address.default.address
-  health_check_interval               = var.health_check_interval
-  health_check_healthy_threshold       = var.health_check_healthy_threshold
-  health_check_unhealthy_threshold     = var.health_check_unhealthy_threshold
-  health_check_timeout                 = var.health_check_timeout
-  ssl_certificate_name                = "${var.app_name}-ssl-cert"
-  dns_subdomain                       = var.dns_subdomain
-  dns_zone_name                       = var.dns_zone_name
+  source                           = "./modules/load_balancer"
+  project_id                       = var.project_id
+  http_health_check_name           = "${var.app_name}-http-healthcheck"
+  backend_service_name             = "${var.app_name}-backend-service"
+  region                           = var.region
+  mig_self_link                    = module.mig.instance_group_id
+  mig_eu_self_link                 = module.mig_eu.instance_group_id
+  url_map_name                     = "${var.app_name}-url-map"
+  https_proxy_name                 = "${var.app_name}-https-proxy"
+  forwarding_rule_name             = "${var.app_name}-forwarding-rule"
+  global_address_ip                = google_compute_global_address.default.address
+  health_check_interval            = var.health_check_interval
+  health_check_healthy_threshold   = var.health_check_healthy_threshold
+  health_check_unhealthy_threshold = var.health_check_unhealthy_threshold
+  health_check_timeout             = var.health_check_timeout
+  ssl_certificate_name             = "${var.app_name}-ssl-cert"
+  dns_subdomain                    = var.dns_subdomain
+  dns_zone_name                    = var.dns_zone_name
 }
 
 module "storage_bucket" {
