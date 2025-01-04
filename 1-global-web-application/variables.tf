@@ -125,7 +125,7 @@ variable "dns_managed_zone_name" {
 variable "dns_subdomain" {
   description = "Subdomain to create the certificate and A record for"
   type        = string
-  default     = "galactic-empire-1"
+  default     = "interstellar"
 }
 
 variable "secondary_region" {
