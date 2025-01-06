@@ -12,13 +12,13 @@ variable "region" {
 variable "app_name" {
   description = "A name for the application (used for resource naming)"
   type        = string
-  default     = "interstellar-testing"
+  default     = "interstellar"
 }
 
 variable "network_name" {
   description = "The name of the VPC network"
   type        = string
-  default     = "interstellar-network-testing"
+  default     = "interstellar-network"
 }
 
 variable "ssh_source_ranges" {

@@ -24,6 +24,8 @@ The architecture consists of the following components:
 7.  **Storage Bucket:** A Google Cloud Storage bucket stores the static files for the web application (`index.html`, `main.css`).
 8.  **Firewall Rules:** Firewall rules allow HTTP, HTTPS, SSH, and ICMP traffic to the instances. Also, allows all egress traffic.
 
+<img src="architecture/devops-project-2-arch-diagram.svg" alt="Global Web Service on Google Cloud">
+
 ## Prerequisites
 
 *   **Google Cloud Project:** You need a Google Cloud project with billing enabled.
@@ -92,13 +94,18 @@ The following outputs are available after deployment:
     cd 1-global-web-application
     ```
 
-2.  **Initialize Terraform:**
+2.  **Login to your Google Cloud account:**
+    ```bash
+    gcloud auth application-default login
+    ```
+
+3.  **Initialize Terraform:**
 
     ```bash
     terraform init
     ```
 
-3.  **Create `terraform.tfvars`:**
+4.  **Create `terraform.tfvars`:**
 
     Create a file named `terraform.tfvars` and set the necessary variable values. For example:
 
@@ -109,7 +116,7 @@ The following outputs are available after deployment:
     dns_managed_zone_name = "your-dns-managed-zone-name"
     ```
 
-4.  **Configure the Backend:**
+5.  **Configure the Backend:**
     *   Update the `backend "gcs"` block in your `main.tf` file with the correct bucket name:
 
     ```terraform
@@ -123,14 +130,14 @@ The following outputs are available after deployment:
     ```
     *   Run `terraform init` again to initialize the backend.
 
-5.  **Deploy the infrastructure:**
+6.  **Deploy the infrastructure:**
 
     ```bash
     terraform plan
     terraform apply
     ```
 
-6.  **Access the application:**
+7.  **Access the application:**
 
     Once the deployment is complete, you can access the application using the `forwarding_rule_ip_address` output or by using the DNS name you configured (e.g., `galactic-empire.google-cloud-pocs.dev`).
 
